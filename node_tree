@@ -1,0 +1,214 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_SIZE 100
+
+// 1. 이진트리 노드 구조체 정의
+typedef struct Node {
+    char data;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+// 스택 구조체 정의 (순회 및 파싱용)
+typedef struct {
+    Node* data[MAX_SIZE];
+    int top;
+} Stack;
+
+void initStack(Stack* s) {
+    s->top = -1;
+}
+
+int isFull(Stack* s) {
+    return s->top == MAX_SIZE - 1;
+}
+
+int isEmpty(Stack* s) {
+    return s->top == -1;
+}
+
+void push(Stack* s, Node* node) {
+    if (!isFull(s)) {
+        s->data[++(s->top)] = node;
+    }
+}
+
+Node* pop(Stack* s) {
+    if (!isEmpty(s)) {
+        return s->data[(s->top)--];
+    }
+    return NULL;
+}
+
+Node* peek(Stack* s) {
+    if (!isEmpty(s)) {
+        return s->data[s->top];
+    }
+    return NULL;
+}
+
+// 새 노드 생성 함수
+Node* createNode(char data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// 2. 괄호 표기법을 이용한 이진트리 생성 함수 (파서)
+// 예시 형식: A(B(D,E),C(,F))
+int idx = 0;
+Node* parseTree(const char* str) {
+    if (str[idx] == '\0') return NULL;
+
+    // 공백 무시
+    while (str[idx] == ' ') idx++;
+
+    if (str[idx] == '\0' || str[idx] == ')' || str[idx] == ',') {
+        return NULL;
+    }
+
+    // 노드 데이터 읽기
+    char data = str[idx++];
+    Node* node = createNode(data);
+
+    // 자식 노드가 있는지 확인
+    if (str[idx] == '(') {
+        idx++; // '(' 건너뛰기
+
+        // 왼쪽 자식 파싱
+        node->left = parseTree(str);
+
+        if (str[idx] == ',') {
+            idx++; // ',' 건너뛰기
+            // 오른쪽 자식 파싱
+            node->right = parseTree(str);
+        }
+
+        if (str[idx] == ')') {
+            idx++; // ')' 건너뛰기
+        } else {
+            printf("[오류] 괄호가 올바르지 않습니다.\n");
+            return NULL;
+        }
+    }
+
+    return node;
+}
+
+// 3. 반복적 전위 순회 (Root -> Left -> Right)
+void preorder(Node* root) {
+    if (root == NULL) return;
+
+    Stack s;
+    initStack(&s);
+    push(&s, root);
+
+    printf("Preorder  : ");
+    while (!isEmpty(&s)) {
+        Node* curr = pop(&s);
+        printf("%c ", curr->data);
+
+        // 스택은 LIFO이므로 오른쪽을 먼저 넣어야 왼쪽이 먼저 pop 됨
+        if (curr->right != NULL) push(&s, curr->right);
+        if (curr->left != NULL) push(&s, curr->left);
+    }
+    printf("\n");
+}
+
+// 4. 반복적 중위 순회 (Left -> Root -> Right)
+void inorder(Node* root) {
+    if (root == NULL) return;
+
+    Stack s;
+    initStack(&s);
+    Node* curr = root;
+
+    printf("Inorder   : ");
+    while (curr != NULL || !isEmpty(&s)) {
+        while (curr != NULL) {
+            push(&s, curr);
+            curr = curr->left;
+        }
+
+        curr = pop(&s);
+        printf("%c ", curr->data);
+
+        curr = curr->right;
+    }
+    printf("\n");
+}
+
+// 5. 반복적 후위 순회 (Left -> Right -> Root) - 두 개의 스택 활용
+void postorder(Node* root) {
+    if (root == NULL) return;
+
+    Stack s1, s2;
+    initStack(&s1);
+    initStack(&s2);
+
+    push(&s1, root);
+    while (!isEmpty(&s1)) {
+        Node* curr = pop(&s1);
+        push(&s2, curr);
+
+        if (curr->left != NULL) push(&s1, curr->left);
+        if (curr->right != NULL) push(&s1, curr->right);
+    }
+
+    printf("Postorder : ");
+    while (!isEmpty(&s2)) {
+        Node* curr = pop(&s2);
+        printf("%c ", curr->data);
+    }
+    printf("\n");
+}
+
+// 트리 구조 출력 함수 (참고용)
+void printTreeStructure(Node* root, int level) {
+    if (root == NULL) return;
+    printTreeStructure(root->right, level + 1);
+    for (int i = 0; i < level; i++) printf("    ");
+    printf("%c\n", root->data);
+    printTreeStructure(root->left, level + 1);
+}
+
+int main() {
+    // 10개 이상의 노드를 가진 시험용 이진트리 괄호 표현식
+    // 트리 구조 예시:
+    //         A
+    //       /   \
+    //      B     C
+    //     / \   / \
+    //    D   E F   G
+    //   /       \
+    //  H         I
+    //   \
+    //    J
+    char expr[256] = "A(B(D(H(,J)),E),C(F(,I),G))";
+
+    printf("--- [이진트리 순회 프로그램] ---\n");
+    printf("입력된 괄호 표현식: %s\n\n", expr);
+
+    idx = 0;
+    Node* root = parseTree(expr);
+
+    if (root == NULL) {
+        printf("트리 생성 실패 또는 잘못된 입력입니다.\n");
+        return 1;
+    }
+
+    printf("[1] 입력된 이진트리 구조 (우측으로 90도 회전된 형태):\n");
+    printTreeStructure(root, 0);
+    printf("\n");
+
+    printf("[2] 반복적 순회 결과 (Iterative Traversals):\n");
+    preorder(root);
+    inorder(root);
+    postorder(root);
+
+    return 0;
+}
