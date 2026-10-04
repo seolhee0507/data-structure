@@ -9,7 +9,7 @@
 #define MAX_VALUE 1000
 
 // ==============================
-// ³ëµå ±¸Á¶Ã¼
+// ë…¸ë“œ êµ¬ì¡°ì²´
 // ==============================
 
 typedef struct Node {
@@ -20,7 +20,7 @@ typedef struct Node {
 } Node;
 
 // ==============================
-// ¹è¿­ Áßº¹ È®ÀÎ ¹× »ğÀÔ
+// ë°°ì—´ ì¤‘ë³µ í™•ì¸ ë° ì‚½ì…
 // ==============================
 
 int insertArray(int arr[], int* size, int value, int* comparisons) {
@@ -28,18 +28,18 @@ int insertArray(int arr[], int* size, int value, int* comparisons) {
         (*comparisons)++;
 
         if (arr[i] == value) {
-            return 0; // Áßº¹
+            return 0; // ì¤‘ë³µ
         }
     }
 
     arr[*size] = value;
     (*size)++;
 
-    return 1; // »ğÀÔ ¼º°ø
+    return 1; // ì‚½ì… ì„±ê³µ
 }
 
 // ==============================
-// BST ±¸Çö
+// BST êµ¬í˜„
 // ==============================
 
 Node* createNode(int value) {
@@ -72,12 +72,12 @@ Node* insertBST(Node* root, int value, int* comparisons) {
         root->right = insertBST(root->right, value, comparisons);
     }
 
-    // °°Àº °ªÀÌ¸é »ğÀÔÇÏÁö ¾ÊÀ½
+    // ê°™ì€ ê°’ì´ë©´ ì‚½ì…í•˜ì§€ ì•ŠìŒ
     return root;
 }
 
 // ==============================
-// AVL Æ®¸® ±¸Çö
+// AVL íŠ¸ë¦¬ êµ¬í˜„
 // ==============================
 
 int max(int a, int b) {
@@ -100,7 +100,7 @@ int getBalance(Node* node) {
     return getHeight(node->left) - getHeight(node->right);
 }
 
-// ¿À¸¥ÂÊ È¸Àü (LL)
+// ì˜¤ë¥¸ìª½ íšŒì „ (LL)
 Node* rotateRight(Node* y) {
     Node* x = y->left;
     Node* T2 = x->right;
@@ -114,7 +114,7 @@ Node* rotateRight(Node* y) {
     return x;
 }
 
-// ¿ŞÂÊ È¸Àü (RR)
+// ì™¼ìª½ íšŒì „ (RR)
 Node* rotateLeft(Node* x) {
     Node* y = x->right;
     Node* T2 = y->left;
@@ -128,14 +128,14 @@ Node* rotateLeft(Node* x) {
     return y;
 }
 
-// AVL »ğÀÔ
+// AVL ì‚½ì…
 Node* insertAVL(Node* node, int value, int* comparisons) {
-    // »õ·Î¿î ³ëµå »ğÀÔ
+    // ìƒˆë¡œìš´ ë…¸ë“œ ì‚½ì…
     if (node == NULL) {
         return createNode(value);
     }
 
-    // µ¥ÀÌÅÍ °ª ºñ±³ È½¼ö
+    // ë°ì´í„° ê°’ ë¹„êµ íšŸìˆ˜
     (*comparisons)++;
 
     if (value < node->data) {
@@ -145,17 +145,17 @@ Node* insertAVL(Node* node, int value, int* comparisons) {
         node->right = insertAVL(node->right, value, comparisons);
     }
     else {
-        // Áßº¹ °ª
+        // ì¤‘ë³µ ê°’
         return node;
     }
 
-    // ³ôÀÌ °»½Å
+    // ë†’ì´ ê°±ì‹ 
     node->height = 1 + max(
         getHeight(node->left),
         getHeight(node->right)
     );
 
-    // ±ÕÇü ÀÎ¼ö °è»ê
+    // ê· í˜• ì¸ìˆ˜ ê³„ì‚°
     int balance = getBalance(node);
 
     // LL
@@ -184,10 +184,10 @@ Node* insertAVL(Node* node, int value, int* comparisons) {
 }
 
 // ==============================
-// Å½»ö ÇÔ¼ö
+// íƒìƒ‰ í•¨ìˆ˜
 // ==============================
 
-// ¼øÂ÷ Å½»ö
+// ìˆœì°¨ íƒìƒ‰
 int searchArray(int arr[], int size, int key, int* comparisons) {
     *comparisons = 0;
 
@@ -202,7 +202,7 @@ int searchArray(int arr[], int size, int key, int* comparisons) {
     return 0;
 }
 
-// BST / AVL °øÅë Å½»ö
+// BST / AVL ê³µí†µ íƒìƒ‰
 int searchTree(Node* root, int key, int* comparisons) {
     *comparisons = 0;
 
@@ -226,7 +226,7 @@ int searchTree(Node* root, int key, int* comparisons) {
 }
 
 // ==============================
-// Æ®¸® ³ôÀÌ °è»ê
+// íŠ¸ë¦¬ ë†’ì´ ê³„ì‚°
 // ==============================
 
 int calculateHeight(Node* root) {
@@ -241,7 +241,7 @@ int calculateHeight(Node* root) {
 }
 
 // ==============================
-// Æ®¸® Ãâ·Â
+// íŠ¸ë¦¬ ì¶œë ¥
 // ==============================
 
 void printTree(Node* root, int space) {
@@ -265,7 +265,7 @@ void printTree(Node* root, int space) {
 }
 
 // ==============================
-// ¸Ş¸ğ¸® ÇØÁ¦
+// ë©”ëª¨ë¦¬ í•´ì œ
 // ==============================
 
 void freeTree(Node* root) {
@@ -280,7 +280,7 @@ void freeTree(Node* root) {
 }
 
 // ==============================
-// ¸ŞÀÎ ÇÔ¼ö
+// ë©”ì¸ í•¨ìˆ˜
 // ==============================
 
 int main(void) {
@@ -308,7 +308,7 @@ int main(void) {
     int avlFound = 0;
 
     // ------------------------------
-    // 1. ³­¼ö 100°³ »ı¼º ¹× »ğÀÔ
+    // 1. ë‚œìˆ˜ 100ê°œ ìƒì„± ë° ì‚½ì…
     // ------------------------------
 
     printf("========== Generated Numbers ==========\n");
@@ -324,7 +324,7 @@ int main(void) {
             printf("\n");
         }
 
-        // µ¿ÀÏÇÑ ³­¼ö¸¦ °°Àº ¼ø¼­·Î ¼¼ ÀÚ·á±¸Á¶¿¡ »ğÀÔ
+        // ë™ì¼í•œ ë‚œìˆ˜ë¥¼ ê°™ì€ ìˆœì„œë¡œ ì„¸ ìë£Œêµ¬ì¡°ì— ì‚½ì…
         insertArray(
             arr,
             &arraySize,
@@ -348,7 +348,7 @@ int main(void) {
     int duplicateCount = DATA_SIZE - arraySize;
 
     // ------------------------------
-    // 2. »ı¼º ¹× »ğÀÔ °á°ú
+    // 2. ìƒì„± ë° ì‚½ì… ê²°ê³¼
     // ------------------------------
 
     printf("\n========== Construction Results ==========\n");
@@ -363,7 +363,7 @@ int main(void) {
     printf("AVL comparisons          : %d\n", avlInsertComparisons);
 
     // ------------------------------
-    // 3. ÀÚ·á±¸Á¶ Å©±â ¹× ³ôÀÌ
+    // 3. ìë£Œêµ¬ì¡° í¬ê¸° ë° ë†’ì´
     // ------------------------------
 
     int bstHeight = calculateHeight(bstRoot);
@@ -382,7 +382,7 @@ int main(void) {
     printTree(avlRoot, 0);
 
     // ------------------------------
-    // 4. Å½»ö ´ë»ó 50°³ »ı¼º
+    // 4. íƒìƒ‰ ëŒ€ìƒ 50ê°œ ìƒì„±
     // ------------------------------
 
     printf("\n========== Search Keys ==========\n");
@@ -397,7 +397,7 @@ int main(void) {
     }
 
     // ------------------------------
-    // 5. ¼¼ ÀÚ·á±¸Á¶ Å½»ö
+    // 5. ì„¸ ìë£Œêµ¬ì¡° íƒìƒ‰
     // ------------------------------
 
     printf("\n========== Search Results ==========\n");
@@ -431,12 +431,12 @@ int main(void) {
             avlRoot, key, &avlComparisons
         );
 
-        // Å½»ö °á°ú È®ÀÎ
+        // íƒìƒ‰ ê²°ê³¼ í™•ì¸
         if (arrayResult) arrayFound++;
         if (bstResult) bstFound++;
         if (avlResult) avlFound++;
 
-        // ÃÑ ºñ±³ È½¼ö ´©Àû
+        // ì´ ë¹„êµ íšŸìˆ˜ ëˆ„ì 
         arraySearchTotal += arrayComparisons;
         bstSearchTotal += bstComparisons;
         avlSearchTotal += avlComparisons;
@@ -451,7 +451,7 @@ int main(void) {
     }
 
     // ------------------------------
-    // 6. Å½»ö °á°ú ¿ä¾à
+    // 6. íƒìƒ‰ ê²°ê³¼ ìš”ì•½
     // ------------------------------
 
     printf("\n========== Search Summary ==========\n");
@@ -480,7 +480,7 @@ int main(void) {
     );
 
     // ------------------------------
-    // 7. ¸Ş¸ğ¸® ÇØÁ¦
+    // 7. ë©”ëª¨ë¦¬ í•´ì œ
     // ------------------------------
 
     freeTree(bstRoot);
